@@ -1,0 +1,23 @@
+version: '3.6'
+services:
+  golapp_service:
+    platform: "linux/amd64"
+    image: node:18.16.0-alpine
+    restart: always
+    build:
+      context: .
+      dockerfile: dev.dockerfile
+    ports:
+      - '5001:5001'
+    volumes:
+      - /usr/src/app/node_modules
+      - .:/usr/src/app
+    container_name: fiservice
+    environment:
+      NODE_ENV: 'development'
+      NODE_PORT: 5001
+      HOSTNAME: 'localhost'
+networks:
+  default:
+    external:
+      name: marketplace_ccc
