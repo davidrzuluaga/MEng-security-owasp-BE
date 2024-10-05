@@ -1,11 +1,10 @@
 import { Router } from "express";
 
-import authController from "./auth";
-import { saveReqLogs } from "../middlewares";
+import postsController from "./posts";
 const router = Router();
 
-router.get("/", saveReqLogs, (req, res) => res.send("Welcome"));
+router.get("/", (req, res) => res.send("Welcome"));
 
-router.use("/auth", authController);
+router.use("/posts", postsController);
 
 export default router;

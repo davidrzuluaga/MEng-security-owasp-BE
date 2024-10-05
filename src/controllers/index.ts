@@ -1,1 +1,1 @@
-export { signIn } from "./auth";
+export { getAllPosts, createPost } from "./post";
