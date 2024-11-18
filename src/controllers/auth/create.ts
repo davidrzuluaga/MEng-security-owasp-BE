@@ -1,33 +1,47 @@
-import { RequestHandler } from 'express';
-import User from '../../db/models/user.model';
+import { RequestHandler } from "express";
+import User from "../../db/models/user.model";
+import SecurityManager from "../../modules/security";
 
-export const createUser: RequestHandler = (req, res) => {
+export const createUser: RequestHandler = async (req, res) => {
   try {
     const { email, password, name, role, client_id } = req.body;
 
+    // Validate required fields
     if (!email || !password || !name || !role || !client_id) {
-      return res.status(400).send({
-        message: 'Please pass email, name, role and password.',
+      return res.status(400).json({
+        message: "Please pass email, name, role, password, and client_id.",
         body: req.body,
       });
     }
-    User.create({
+
+    // Hash the password
+    const hashedPassword = await SecurityManager.encryptPassword(password);
+
+    // Create the user
+    const user = await User.create({
       email,
-      password,
+      password: hashedPassword,
       role,
       name,
       client_id,
       deleted: false,
-    })
-      .then((user) => res.status(201).send(user))
-      .catch((error) => {
-        console.log(error);
-        res.status(400).send(error);
-      });
+    });
+
+    // Respond with the created user (without sensitive info)
+    return res.status(201).json({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+    });
   } catch (error) {
+    console.error("Error creating user:", error);
     return res.status(500).json({
       success: false,
-      message: 'Server error. Please try again.',
+      message: "Server error. Please try again.",
     });
   }
 };

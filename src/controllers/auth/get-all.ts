@@ -6,7 +6,7 @@ import User from '../../db/models/user.model';
 
 export const getAllUsers: RequestHandler = async (req, res) => {
   try {
-    let { keyword, client_id } = req.body;
+    let { keyword } = req.body;
 
     let filter = {} as WhereOptions & UserType;
     if (keyword) {
@@ -22,8 +22,6 @@ export const getAllUsers: RequestHandler = async (req, res) => {
         ],
       };
     }
-
-    if (client_id) filter.client_id = client_id;
 
     const users = await User.findAll({
       where: filter,

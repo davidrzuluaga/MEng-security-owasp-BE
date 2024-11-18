@@ -1,9 +1,7 @@
-import jwt from 'jsonwebtoken';
 import { RequestHandler } from 'express';
 import { Op } from 'sequelize';
-import bcrypt from 'bcrypt-nodejs';
-
 import User from '../../db/models/user.model';
+import SecurityManager from '../../modules/security';
 import { UserType } from '../../types/user';
 
 const restrictUserInfo = (user: UserType): UserType => ({
@@ -11,43 +9,43 @@ const restrictUserInfo = (user: UserType): UserType => ({
   name: user.name,
   email: user.email,
   role: user.role,
-  client_id: user.client_id,
 });
 
-export const signIn: RequestHandler = (req, res) => {
-  const secretJWTKey = process.env.secretJWTKey || 'PrevKey';
+export const signIn: RequestHandler = async (req, res) => {
   try {
-    if (!req.body.email || !req.body.password) {
-      return res.status(400).send({ message: 'Please pass email and password.' });
+    const { email, password } = req.body;
+
+    // Input validation
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Please pass email and password.' });
     }
-    let token: string;
-    User.findOne({
+
+    // Find the user in the database
+    const user = await User.findOne({
       where: {
-        email: req.body.email,
-        deleted: { [Op.not]: true },
+        email,
+        deleted: { [Op.not]: true }, // Ensure user is not marked as deleted
       },
-    })
-      .then((user) => {
-        if (!user) {
-          return res.status(400).send({
-            message: 'Authentication failed. User not found.',
-          });
-        }
-        bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
-          if (isMatch && !err) {
-            token = jwt.sign(restrictUserInfo(JSON.parse(JSON.stringify(user))), secretJWTKey, {
-              expiresIn: 86400 * 20,
-            });
-            res.json({ success: true, token: 'JWT ' + token });
-          } else {
-            return res.status(400).send({
-              message: 'Authentication failed. Wrong password.',
-            });
-          }
-        });
-      })
-      .catch((error) => res.status(400).send(error));
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Authentication failed.' });
+    }
+
+    // Verify the password using SecurityManager
+    const isMatch = await SecurityManager.comparePassword(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Authentication failed.' });
+    }
+
+    // Restrict user information and generate a JWT
+    const userInfo = restrictUserInfo(user as UserType);
+    const token = SecurityManager.generateToken(userInfo, 86400 * 20); // Token valid for 20 days
+
+    return res.json({ success: true, token: 'JWT ' + token });
   } catch (error) {
-    return res.status(500);
+    console.error('Error during sign-in:', error);
+    return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
