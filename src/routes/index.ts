@@ -6,5 +6,6 @@ const router = Router();
 router.get("/", (req, res) => res.send("Welcome"));
 
 router.use("/posts", postsController);
+router.use("/auth", postsController);
 
 export default router;
