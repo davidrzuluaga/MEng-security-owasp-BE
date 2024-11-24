@@ -110,13 +110,49 @@ class SecurityManager {
     return expectedToken === token;
   }
   /**
-   * Checks if a user has a required role.
-   * @param userRole - The role of the user.
-   * @param requiredRoles - An array of roles that are allowed access.
-   * @returns A boolean indicating if the user has access.
+   * Validates if the user has the required access rights.
+   * @param userId The authenticated user's ID.
+   * @param targetId The ID of the resource's owner (e.g., comment's author).
+   * @param userRole The role of the authenticated user.
+   * @param requiredRoles Roles that are allowed to access the resource.
+   * @returns True if the user has access, otherwise false.
    */
-  static checkAccessRights(userRole: string, requiredRoles: string[]): boolean {
-    return requiredRoles.includes(userRole);
+
+  static checkAccessRights(
+    userId: number,
+    targetId: number,
+    userRole: string,
+    requiredRoles: string[] = []
+  ): boolean {
+    // Allow access if the user is the owner of the resource
+    if (userId === targetId) {
+      return true;
+    }
+
+    // Allow access if the user's role matches any of the required roles
+    if (requiredRoles.includes(userRole)) {
+      return true;
+    }
+
+    // Deny access by default
+    return false;
+  }
+
+  /**
+   * Sanitizes input to prevent SQL injection, XSS, and other malicious attacks.
+   * @param input The string to sanitize.
+   * @returns A sanitized string.
+   */
+  static sanitizeInput(input: string): string {
+    if (typeof input !== "string") return input; // If input is not a string, return it as is.
+
+    // Replace potentially dangerous characters with safe equivalents
+    return input
+      .replace(/<script.*?>.*?<\/script>/gi, "") // Remove <script> tags
+      .replace(/<[^>]+>/g, "") // Remove other HTML tags
+      .replace(/['";]/g, "") // Remove single quotes, double quotes, and semicolons
+      .replace(/--/g, "") // Remove SQL comment indicators
+      .replace(/\\/g, ""); // Remove backslashes
   }
 }
 
