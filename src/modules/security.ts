@@ -75,7 +75,7 @@ class SecurityManager {
    * @throws Error if the token is invalid or expired.
    */
   static verifyToken(token: string): TokenPayload {
-    return jwt.verify(token, this.secretKey);
+    return jwt.verify(token, this.secretKey) as TokenPayload;
   }
 
   /**
