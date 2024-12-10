@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import SecurityManager from "../modules/security";
 import { UserType } from "../types/user";
 
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
   user?: UserType;
 }
 

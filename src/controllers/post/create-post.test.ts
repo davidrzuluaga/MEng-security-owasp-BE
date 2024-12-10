@@ -21,7 +21,8 @@ describe("POST /posts", () => {
 
     const response = await request(app)
       .post("/posts")
-      .send({ title: "Test Title", post: "Test Post", user_id: 1 });
+      .set("user", JSON.stringify({ id: 1 }))
+      .send({ title: "Test Title", post: "Test Post"});
 
     expect(response.status).toBe(201);
     expect(response.body.client).toEqual(mockPost);
@@ -32,7 +33,8 @@ describe("POST /posts", () => {
 
     const response = await request(app)
       .post("/posts")
-      .send({ title: "Test Title", post: "Test Post", user_id: 1 });
+      .set("user", JSON.stringify({ id: 1 }))
+      .send({ title: "Test Title", post: "Test Post"});
 
     expect(response.status).toBe(400);
     expect(response.body.client).toBeNull();
@@ -43,7 +45,8 @@ describe("POST /posts", () => {
 
     const response = await request(app)
       .post("/posts")
-      .send({ title: "Test Title", post: "Test Post", user_id: 1 });
+      .set("user", JSON.stringify({ id: 1 }))
+      .send({ title: "Test Title", post: "Test Post"});
 
     expect(response.status).toBe(500);
     expect(response.body.message).toBe("error");

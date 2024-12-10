@@ -9,7 +9,7 @@ import { signIn } from "../controllers/auth/sign-in";
 
 const router = Router();
 
-router.get("/", getAllUsers);
+router.get("/", authenticateToken, checkPermissions(["admin"]), getAllUsers);
 
 router.get(
   "/:email",

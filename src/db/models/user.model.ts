@@ -1,10 +1,16 @@
-import { Table, Model, Column, DataType, BeforeSave } from 'sequelize-typescript';
-import bcrypt from 'bcrypt-nodejs';
+import {
+  Table,
+  Model,
+  Column,
+  DataType,
+  BeforeSave,
+} from "sequelize-typescript";
+import bcrypt from "bcrypt-nodejs";
 
 @Table({
-  timestamps: true,
-  tableName: 'Users',
-  modelName: 'User',
+  timestamps: false,
+  tableName: "users",
+  modelName: "User",
 })
 class User extends Model {
   @Column({
@@ -35,11 +41,19 @@ class User extends Model {
   })
   declare role: string;
 
-  @BeforeSave
-  static hashPassword(user: User) {
-    if (user.changed('password')) {
-      user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10));
-    }
-  }
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare deleted_at: Date;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare created_at: Date;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare updated_at: Date;
 }
 export default User;

@@ -4,12 +4,12 @@ import SecurityManager from "../../modules/security";
 
 export const createUser: RequestHandler = async (req, res) => {
   try {
-    const { email, password, name, role, client_id } = req.body;
+    const { email, password, name, role } = req.body;
 
     // Validate required fields
-    if (!email || !password || !name || !role || !client_id) {
+    if (!email || !password || !name || !role) {
       return res.status(400).json({
-        message: "Please pass email, name, role, password, and client_id.",
+        message: "Please pass email, name, role, password, an",
         body: req.body,
       });
     }
@@ -23,7 +23,6 @@ export const createUser: RequestHandler = async (req, res) => {
       password: hashedPassword,
       role,
       name,
-      client_id,
       deleted: false,
     });
 

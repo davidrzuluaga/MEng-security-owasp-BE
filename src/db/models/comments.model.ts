@@ -3,7 +3,7 @@ import User from './user.model';
 import Post from './posts.model';
 
 @Table({
-  timestamps: true, // Automatically add `createdAt` and `updatedAt` timestamps
+  timestamps: false,
   tableName: 'Comments',
   modelName: 'Comment',
 })
@@ -27,7 +27,7 @@ class Comment extends Model {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  declare author_id: number;
+  declare user_id: number;
 
   @ForeignKey(() => Post)
   @Column({
@@ -45,7 +45,7 @@ class Comment extends Model {
 
   // Relationships
   @BelongsTo(() => User)
-  declare author: User;
+  declare user: User;
 
   @BelongsTo(() => Post)
   declare post: Post;

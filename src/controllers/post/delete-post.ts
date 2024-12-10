@@ -2,13 +2,12 @@ import { RequestHandler } from "express";
 import Post from "../../db/models/posts.model";
 import { AuthenticatedRequest } from "../../middlewares/check-permissions";
 
-export const editPost: RequestHandler = async (
+export const deletePost: RequestHandler = async (
   req: AuthenticatedRequest,
   res
 ) => {
   try {
     const { id } = req.params; // Assuming the post ID is provided as a URL parameter
-    const { title, post } = req.body; // Updated fields provided in the request body
 
     // Find the post to edit
     const existingPost = await Post.findByPk(id);
@@ -25,8 +24,7 @@ export const editPost: RequestHandler = async (
     }
 
     // Update the post
-    existingPost.title = title ?? existingPost.title;
-    existingPost.post = post ?? existingPost.post;
+    existingPost.deleted_at = new Date();
 
     // Save the updated post
     const updatedPost = await existingPost.save();
@@ -34,6 +32,6 @@ export const editPost: RequestHandler = async (
     return res.status(200).json({ updatedPost });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Error updating the post" });
+    return res.status(500).json({ message: "error" });
   }
 };

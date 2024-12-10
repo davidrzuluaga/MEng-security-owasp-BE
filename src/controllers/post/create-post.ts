@@ -1,21 +1,30 @@
 import { RequestHandler } from "express";
 import Post from "../../db/models/posts.model";
+import { AuthenticatedRequest } from "../../middlewares/check-permissions";
+import { PostType } from "../../types/post";
 
-export const createPost: RequestHandler = async (req, res) => {
+export const createPost: RequestHandler = async (req: AuthenticatedRequest, res) => {
   try {
-    const { title, post, user_id } = req.body;
+    const { title, post } = req.body;
    
-    const client = await Post.create({
-      title, post, user_id 
-    });
+    if (!title || !post) {
+      return res.status(400).json({ message: "Title and post are required" });
+    }
 
-    if (client) {
-      return res.status(201).json({ client });
+    let newPost = {} as PostType;
+    if (req?.user?.id) {
+      newPost = await Post.create({
+        title, post, user_id: req.user.id
+      });
+    }
+
+    if (newPost?.id) {
+      return res.status(201).json({ newPost });
     } else {
-      return res.status(400).json({ client });
+      return res.status(400).json({ newPost });
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "error", error });
+    return res.status(500).json({ message: "error" });
   }
 };

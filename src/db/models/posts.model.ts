@@ -1,8 +1,8 @@
 import { Table, Model, Column, DataType } from 'sequelize-typescript';
 
 @Table({
-  timestamps: true,
-  tableName: 'Posts',
+  timestamps: false,
+  tableName: 'posts',
   modelName: 'Post',
 })
 class Post extends Model {
@@ -27,7 +27,23 @@ class Post extends Model {
   @Column({
     type: DataType.INTEGER,
   })
-  declare user_id: string;
+  declare user_id: number;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare deleted_at: Date;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare created_at: Date;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare updated_at: Date;
 
 }
+
 export default Post;
