@@ -4,7 +4,7 @@ import SecurityManager from "../../modules/security";
 
 export const editComment: RequestHandler = async (req, res) => {
   try {
-    const { authenticatedUserId, userRole, content } = req.body; // Assuming these come from middleware
+    const { author_name, content } = req.body; // Assuming these come from middleware
     const { id } = req.params; // Comment ID
 
     const comment = await Comment.findByPk(id);
@@ -13,16 +13,8 @@ export const editComment: RequestHandler = async (req, res) => {
       return res.status(404).json({ message: "Comment not found" });
     }
 
-    // Validate access rights
-    const isAuthorized = SecurityManager.checkAccessRights(
-      authenticatedUserId,
-      comment.author_id,
-      userRole,
-      ["admin"] // Admins can bypass ownership restrictions
-    );
-
-    if (!isAuthorized) {
-      return res.status(403).json({ message: "Forbidden: Access denied" });
+    if (comment?.author_name !== author_name) {
+      return res.status(404).json({ message: "No author provided" });
     }
 
     // Sanitize the input content and update

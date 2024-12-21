@@ -1,10 +1,9 @@
-import { Table, Model, Column, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import User from './user.model';
+import { Table, Model, Column, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
 import Post from './posts.model';
 
 @Table({
   timestamps: false,
-  tableName: 'Comments',
+  tableName: 'comments',
   modelName: 'Comment',
 })
 class Comment extends Model {
@@ -22,12 +21,11 @@ class Comment extends Model {
   })
   declare content: string;
 
-  @ForeignKey(() => User)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
     allowNull: false,
   })
-  declare user_id: number;
+  declare author_name: number;
 
   @ForeignKey(() => Post)
   @Column({
@@ -37,15 +35,19 @@ class Comment extends Model {
   declare post_id: number;
 
   @Column({
-    type: DataType.DATE,
-    defaultValue: DataType.NOW,
-    allowNull: false,
+    type: DataType.INTEGER,
   })
-  declare timestamp: Date;
+  declare deletedAt: Date;
 
-  // Relationships
-  @BelongsTo(() => User)
-  declare user: User;
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare createdAt: Date;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare updatedAt: Date;
 
   @BelongsTo(() => Post)
   declare post: Post;

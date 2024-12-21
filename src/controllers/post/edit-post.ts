@@ -1,14 +1,10 @@
 import { RequestHandler } from "express";
 import Post from "../../db/models/posts.model";
-import { AuthenticatedRequest } from "../../middlewares/check-permissions";
 
-export const editPost: RequestHandler = async (
-  req: AuthenticatedRequest,
-  res
-) => {
+export const editPost: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params; // Assuming the post ID is provided as a URL parameter
-    const { title, post } = req.body; // Updated fields provided in the request body
+    const { title, post, author_name } = req.body; // Updated fields provided in the request body
 
     // Find the post to edit
     const existingPost = await Post.findByPk(id);
@@ -17,11 +13,8 @@ export const editPost: RequestHandler = async (
       return res.status(404).json({ message: "Post not found" });
     }
 
-    // Check if the authenticated user is the same as the one deleting the post
-    if (Number(existingPost.user_id) !== req?.user?.id) {
-      return res.status(401).json({
-        message: "Forbidden: You are not allowed to delete this post",
-      });
+    if (existingPost?.author_name !== author_name) {
+      return res.status(404).json({ message: "No author provided" });
     }
 
     // Update the post

@@ -1,9 +1,10 @@
-import { Table, Model, Column, DataType } from 'sequelize-typescript';
+import { Table, Model, Column, DataType, HasMany } from "sequelize-typescript";
+import Comment from "./comments.model";
 
 @Table({
-  timestamps: false,
-  tableName: 'posts',
-  modelName: 'Post',
+  timestamps: true,
+  tableName: "posts",
+  modelName: "Post",
 })
 class Post extends Model {
   @Column({
@@ -27,23 +28,25 @@ class Post extends Model {
   @Column({
     type: DataType.INTEGER,
   })
-  declare user_id: number;
+  declare author_name: number;
 
   @Column({
     type: DataType.INTEGER,
   })
-  declare deleted_at: Date;
+  declare deletedAt: Date;
 
   @Column({
     type: DataType.INTEGER,
   })
-  declare created_at: Date;
+  declare createdAt: Date;
 
   @Column({
     type: DataType.INTEGER,
   })
-  declare updated_at: Date;
+  declare updatedAt: Date;
 
+  @HasMany(() => Comment)
+  declare comments: Comment[];
 }
 
 export default Post;

@@ -1,8 +1,6 @@
 import { Router } from "express";
 
 import { getAllPosts, createPost, deletePost, editPost } from "../controllers";
-import authenticateToken from "../middlewares/authenticate-token";
-import checkPermissions from "../middlewares/check-permissions";
 
 const router = Router();
 
@@ -10,8 +8,8 @@ const router = Router();
 router.get("/", getAllPosts);
 
 // Protected route to create a post (only accessible by 'admin' or 'editor')
-router.post("/", authenticateToken, createPost);
-router.delete("/:id", authenticateToken, deletePost);
-router.patch("/:id", authenticateToken, editPost);
+router.post("/", createPost);
+router.delete("/:id", deletePost);
+router.patch("/:id", editPost);
 
 export default router;
