@@ -13,13 +13,10 @@ export const editPost: RequestHandler = async (req, res) => {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    if (existingPost?.author_name !== author_name) {
-      return res.status(404).json({ message: "No author provided" });
-    }
-
     // Update the post
     existingPost.title = title ?? existingPost.title;
     existingPost.post = post ?? existingPost.post;
+    existingPost.author_name = author_name ?? existingPost.author_name;
 
     // Save the updated post
     const updatedPost = await existingPost.save();

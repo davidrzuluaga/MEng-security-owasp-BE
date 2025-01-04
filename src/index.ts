@@ -4,7 +4,7 @@ import cors from "cors";
 import './db';
 const app = express();
 
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 3030;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

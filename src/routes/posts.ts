@@ -10,6 +10,6 @@ router.get("/", getAllPosts);
 // Protected route to create a post (only accessible by 'admin' or 'editor')
 router.post("/", createPost);
 router.delete("/:id", deletePost);
-router.patch("/:id", editPost);
+router.put("/:id", editPost);
 
 export default router;

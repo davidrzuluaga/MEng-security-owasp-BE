@@ -34,21 +34,6 @@ class Comment extends Model {
   })
   declare post_id: number;
 
-  @Column({
-    type: DataType.INTEGER,
-  })
-  declare deletedAt: Date;
-
-  @Column({
-    type: DataType.INTEGER,
-  })
-  declare createdAt: Date;
-
-  @Column({
-    type: DataType.INTEGER,
-  })
-  declare updatedAt: Date;
-
   @BelongsTo(() => Post)
   declare post: Post;
 }

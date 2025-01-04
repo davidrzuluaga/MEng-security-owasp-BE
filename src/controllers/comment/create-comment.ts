@@ -4,16 +4,15 @@ import Comment from "../../db/models/comments.model";
 
 export const createComment: RequestHandler = async (req, res) => {
   try {
-    const { creatorName, postId, content } = req.body;
+    const { author_name, post_id, content } = req.body;
 
     // Sanitize the input content
     const sanitizedContent = SecurityManager.sanitizeInput(content);
 
     const newComment = await Comment.create({
       content: sanitizedContent,
-      post_id: postId,
-      author_name: creatorName,
-      timestamp: new Date(),
+      post_id,
+      author_name,
     });
 
     if (newComment) {
