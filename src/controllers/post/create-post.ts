@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import Post from "../../db/models/posts.model";
 import { PostType } from "../../types/post";
+import SecurityManager from "../../modules/security";
 
 export const createPost: RequestHandler = async (req, res) => {
   try {
@@ -11,9 +12,9 @@ export const createPost: RequestHandler = async (req, res) => {
     }
 
     let newPost = {
-      title,
-      post,
-      author_name,
+      title: SecurityManager.sanitizeInput(title),
+      post: SecurityManager.sanitizeInput(post),
+      author_name: SecurityManager.sanitizeInput(author_name),
     } as PostType;
 
     if (author_name) {

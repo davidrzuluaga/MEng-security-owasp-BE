@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getAllPosts, createPost } from "../controllers";
+import { getAllPosts, createPost, editPost } from "../controllers";
 
 const router = Router();
 
@@ -9,5 +9,6 @@ router.get("/", getAllPosts);
 
 // Protected route to create a post (only accessible by 'admin' or 'editor')
 router.post("/", createPost);
+router.put("/:id", editPost);
 
 export default router;

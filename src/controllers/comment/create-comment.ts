@@ -6,13 +6,10 @@ export const createComment: RequestHandler = async (req, res) => {
   try {
     const { author_name, post_id, content } = req.body;
 
-    // Sanitize the input content
-    const sanitizedContent = SecurityManager.sanitizeInput(content);
-
     const newComment = await Comment.create({
-      content: sanitizedContent,
+      content: SecurityManager.sanitizeInput(content),
       post_id,
-      author_name,
+      author_name: SecurityManager.sanitizeInput(author_name),
     });
 
     if (newComment) {
