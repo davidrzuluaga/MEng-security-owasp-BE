@@ -1,2 +1,2 @@
-export { getAllPosts, createPost, deletePost, editPost } from "./post";
-export { createComment, deleteComment } from "./comment";
+export { getAllPosts, createPost } from "./post";
+export { createComment } from "./comment";
