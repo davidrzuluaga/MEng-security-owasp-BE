@@ -1,11 +1,11 @@
 import request from "supertest";
 import express from "express";
-import { getAllPosts } from "./all-posts";
 import { Post } from "../../db/models";
 import { Op } from "sequelize";
+import PostController from "./post-controller";
 
 const app = express();
-app.get("/posts", getAllPosts);
+app.get("/posts", PostController.getAllPosts);
 
 jest.mock("../../db/models", () => ({
   Post: {

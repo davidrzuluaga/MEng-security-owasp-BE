@@ -1,12 +1,12 @@
 import request from "supertest";
 import express from "express";
-import { editPost } from "./edit-post";
 import Post from "../../db/models/posts.model";
 import SecurityManager from "../../modules/security";
+import PostController from "./post-controller";
 
 const app = express();
 app.use(express.json());
-app.put("/posts/:id", editPost);
+app.put("/posts/:id", PostController.editPost);
 
 jest.mock("../../db/models/posts.model");
 jest.mock("../../modules/security");

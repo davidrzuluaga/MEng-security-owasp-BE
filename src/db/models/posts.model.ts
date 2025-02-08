@@ -30,11 +30,6 @@ class Post extends Model {
   })
   declare author_name: string;
 
-  @Column({
-    type: DataType.INTEGER,
-  })
-  declare deletedAt: Date;
-
   @HasMany(() => Comment)
   declare comments: Comment[];
 }

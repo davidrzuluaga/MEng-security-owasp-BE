@@ -1,9 +1,8 @@
 import { Router } from "express";
-
-import { createComment } from "../controllers";
+import CommentController from "../controllers/comment/comment-controller";
 
 const router = Router();
 
-router.post("/", createComment);
+router.post("/", CommentController.create);
 
 export default router;

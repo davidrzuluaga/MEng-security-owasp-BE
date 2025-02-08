@@ -1,12 +1,12 @@
 import request from "supertest";
 import express from "express";
-import { createComment } from "./create-comment";
 import Comment from "../../db/models/comments.model";
 import SecurityManager from "../../modules/security";
+import CommentController from "./comment-controller";
 
 const app = express();
 app.use(express.json());
-app.post("/comments", createComment);
+app.post("/comments", CommentController.create);
 
 jest.mock("../../db/models/comments.model");
 jest.mock("../../modules/security");
