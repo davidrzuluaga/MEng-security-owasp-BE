@@ -5,6 +5,13 @@ import SecurityManager from "../../modules/security";
 import { PostType } from "../../types/post";
 
 class PostController {
+  /**
+   * Retrieves all posts with optional title filtering.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @param {string} [req.query.title] - Optional title filter.
+   * @returns {Promise<Response>} JSON response with posts.
+   */
   public async getAllPosts(req: Request, res: Response): Promise<Response> {
     try {
       let filters: WhereOptions = {
@@ -39,6 +46,15 @@ class PostController {
       return res.status(500).json({ message: "error" });
     }
   }
+  /**
+   * Creates a new post.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @param {string} req.body.title - The title of the post.
+   * @param {string} req.body.post - The content of the post.
+   * @param {string} req.body.author_name - The author of the post.
+   * @returns {Promise<Response>} JSON response with created post.
+   */
   public async createPost(req: Request, res: Response): Promise<Response> {
     try {
       const { title, post, author_name } = req.body;
@@ -67,6 +83,16 @@ class PostController {
       return res.status(500).json({ message: "error" });
     }
   }
+  /**
+   * Edits an existing post by ID.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @param {string} req.params.id - The ID of the post to edit.
+   * @param {string} [req.body.title] - The updated title of the post.
+   * @param {string} [req.body.post] - The updated content of the post.
+   * @param {string} [req.body.author_name] - The updated author name.
+   * @returns {Promise<Response>} JSON response with updated post.
+   */
   public async editPost(req: Request, res: Response): Promise<Response> {
     try {
       const { id } = req.params;
@@ -79,7 +105,8 @@ class PostController {
 
       if (title) existingPost.title = SecurityManager.sanitizeInput(title);
       if (post) existingPost.post = SecurityManager.sanitizeInput(post);
-      if (author_name) existingPost.author_name = SecurityManager.sanitizeInput(author_name);
+      if (author_name)
+        existingPost.author_name = SecurityManager.sanitizeInput(author_name);
 
       const updatedPost = await existingPost.save();
       return res.status(200).json({ updatedPost });
