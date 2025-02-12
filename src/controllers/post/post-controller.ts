@@ -51,21 +51,21 @@ class PostController {
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.
    * @param {string} req.body.title - The title of the post.
-   * @param {string} req.body.post - The content of the post.
+   * @param {string} req.body.content - The content of the post.
    * @param {string} req.body.author_name - The author of the post.
    * @returns {Promise<Response>} JSON response with created post.
    */
   public async createPost(req: Request, res: Response): Promise<Response> {
     try {
-      const { title, post, author_name } = req.body;
+      const { title, content, author_name } = req.body;
 
-      if (!title || !post || !author_name) {
+      if (!title || !content || !author_name) {
         return res.status(400).json({ message: "Title and post are required" });
       }
 
       let newPost = {
         title: SecurityManager.sanitizeInput(title),
-        post: SecurityManager.sanitizeInput(post),
+        content: SecurityManager.sanitizeInput(content),
         author_name: SecurityManager.sanitizeInput(author_name),
       } as PostType;
 
@@ -89,14 +89,14 @@ class PostController {
    * @param {Response} res - The response object.
    * @param {string} req.params.id - The ID of the post to edit.
    * @param {string} [req.body.title] - The updated title of the post.
-   * @param {string} [req.body.post] - The updated content of the post.
+   * @param {string} [req.body.content] - The updated content of the post.
    * @param {string} [req.body.author_name] - The updated author name.
    * @returns {Promise<Response>} JSON response with updated post.
    */
   public async editPost(req: Request, res: Response): Promise<Response> {
     try {
       const { id } = req.params;
-      const { title, post, author_name } = req.body;
+      const { title, content, author_name } = req.body;
 
       const existingPost = await Post.findByPk(id);
       if (!existingPost) {
@@ -104,7 +104,7 @@ class PostController {
       }
 
       if (title) existingPost.title = SecurityManager.sanitizeInput(title);
-      if (post) existingPost.post = SecurityManager.sanitizeInput(post);
+      if (content) existingPost.content = SecurityManager.sanitizeInput(content);
       if (author_name)
         existingPost.author_name = SecurityManager.sanitizeInput(author_name);
 

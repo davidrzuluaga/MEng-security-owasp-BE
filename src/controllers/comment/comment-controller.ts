@@ -14,7 +14,7 @@ class CommentController {
    * @property {string} req.body.post_id - The ID of the post the comment belongs to.
    * @property {string} req.body.content - The content of the comment.
    */
-  async create(req: Request, res: Response): Promise<Response> {
+  async createComment(req: Request, res: Response): Promise<Response> {
     try {
       const { author_name, post_id, content } = req.body;
 

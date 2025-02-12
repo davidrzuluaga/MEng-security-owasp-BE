@@ -16,7 +16,7 @@ describe("POST /posts", () => {
     const mockPost = {
       id: 1,
       title: "Test Title",
-      post: "Test Post",
+      content: "Test Post",
       author_name: "Test Author",
     };
 
@@ -27,7 +27,7 @@ describe("POST /posts", () => {
 
     const response = await request(app).post("/posts").send({
       title: "Test Title",
-      post: "Test Post",
+      content: "Test Post",
       author_name: "Test Author",
     });
 
@@ -38,7 +38,7 @@ describe("POST /posts", () => {
   it("should return 400 if title, post, or author_name is missing", async () => {
     const response = await request(app).post("/posts").send({
       title: "Test Title",
-      post: "Test Post",
+      content: "Test Post",
     });
 
     expect(response.status).toBe(400);
@@ -52,7 +52,7 @@ describe("POST /posts", () => {
 
     const response = await request(app).post("/posts").send({
       title: "Test Title",
-      post: "Test Post",
+      content: "Test Post",
       author_name: "Test Author",
     });
 
@@ -70,19 +70,19 @@ describe("POST /posts", () => {
     (Post.create as jest.Mock).mockResolvedValue({
       id: 1,
       title: sanitizedInput,
-      post: sanitizedInput,
+      content: sanitizedInput,
       author_name: sanitizedInput,
     });
 
     const response = await request(app).post("/posts").send({
       title: maliciousInput,
-      post: maliciousInput,
+      content: maliciousInput,
       author_name: maliciousInput,
     });
 
     expect(response.status).toBe(201);
     expect(response.body.newPost.title).toBe(sanitizedInput);
-    expect(response.body.newPost.post).toBe(sanitizedInput);
+    expect(response.body.newPost.content).toBe(sanitizedInput);
     expect(response.body.newPost.author_name).toBe(sanitizedInput);
   });
 });

@@ -23,7 +23,7 @@ class Post extends Model {
   @Column({
     type: DataType.STRING,
   })
-  declare post: string;
+  declare content: string;
 
   @Column({
     type: DataType.INTEGER,

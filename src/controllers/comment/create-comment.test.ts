@@ -6,7 +6,7 @@ import CommentController from "./comment-controller";
 
 const app = express();
 app.use(express.json());
-app.post("/comments", CommentController.create);
+app.post("/comments", CommentController.createComment);
 
 jest.mock("../../db/models/comments.model");
 jest.mock("../../modules/security");
