@@ -9,23 +9,50 @@ class PostController {
    * Retrieves all posts with optional title filtering.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.
-   * @param {string} [req.query.title] - Optional title filter.
    * @returns {Promise<Response>} JSON response with posts.
    */
   public async getAllPosts(req: Request, res: Response): Promise<Response> {
     try {
-      let filters: WhereOptions = {
-        deletedAt: null,
-      };
-
-      if (req.query.title && typeof req.query.title === "string") {
-        filters = {
-          ...filters,
-          title: {
-            [Op.iLike]: `%${SecurityManager.sanitizeInput(req.query.title)}%`,
+      const posts = await Post.findAll({
+        order: [["createdAt", "DESC"]],
+        include: [
+          {
+            association: "comments",
+            required: false,
+            order: [["createdAt", "DESC"]],
           },
-        };
+        ],
+      });
+
+      return res.status(200).json({ posts, success: true });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "error" });
+    }
+  }
+  /**
+   * Retrieves all posts with optional title filtering.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @param {string} [title] - Optional title filter.
+   * @returns {Promise<Response>} JSON response with posts.
+   */
+  public async getAllPostsByTitle(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
+    try {
+      const { title } = req.query;
+
+      if (!title || typeof title !== "string") {
+        return res.status(400).json({ message: "Invalid title" });
       }
+
+      let filters: WhereOptions = {
+        title: {
+          [Op.iLike]: `%${SecurityManager.sanitizeInput(title)}%`,
+        },
+      };
 
       const posts = await Post.findAll({
         where: filters,
@@ -33,7 +60,6 @@ class PostController {
         include: [
           {
             association: "comments",
-            where: { deletedAt: null },
             required: false,
             order: [["createdAt", "DESC"]],
           },
@@ -104,7 +130,8 @@ class PostController {
       }
 
       if (title) existingPost.title = SecurityManager.sanitizeInput(title);
-      if (content) existingPost.content = SecurityManager.sanitizeInput(content);
+      if (content)
+        existingPost.content = SecurityManager.sanitizeInput(content);
       if (author_name)
         existingPost.author_name = SecurityManager.sanitizeInput(author_name);
 

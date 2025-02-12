@@ -39,31 +39,4 @@ describe("GET /posts", () => {
     expect(response.status).toBe(500);
     expect(response.body).toEqual({ message: "error" });
   });
-
-  it("should prevent SQL injection", async () => {
-    const maliciousInput = "'; DROP TABLE posts; --";
-    (Post.findAll as jest.Mock).mockResolvedValue([]);
-
-    const response = await request(app).get(`/posts?title=${maliciousInput}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ posts: [], success: true });
-    expect(Post.findAll).toHaveBeenCalledWith({
-      where: {
-        deletedAt: null,
-        title: {
-          [Op.iLike]: "% DROP TABLE posts %",
-        },
-      },
-      order: [["createdAt", "DESC"]],
-      include: [
-        {
-          association: "comments",
-          where: { deletedAt: null },
-          required: false,
-          order: [["createdAt", "DESC"]],
-        },
-      ],
-    });
-  });
 });
