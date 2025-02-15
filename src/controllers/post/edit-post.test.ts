@@ -19,7 +19,7 @@ describe("editPost", () => {
       .put("/posts/1")
       .send({
         title: "New Title",
-        post: "New Post",
+        content: "New Post",
         author_name: "New Author",
       });
 
@@ -31,12 +31,12 @@ describe("editPost", () => {
     const mockPost = {
       id: 1,
       title: "Old Title",
-      post: "Old Post",
+      content: "Old Post",
       author_name: "Old Author",
       save: jest.fn().mockResolvedValue({
         id: 1,
         title: "New Title",
-        post: "New Post",
+        content: "New Post",
         author_name: "New Author",
       }),
     };
@@ -50,7 +50,7 @@ describe("editPost", () => {
       .put("/posts/1")
       .send({
         title: "New Title",
-        post: "New Post",
+        content: "New Post",
         author_name: "New Author",
       });
 
@@ -59,7 +59,7 @@ describe("editPost", () => {
       updatedPost: {
         id: 1,
         title: "New Title",
-        post: "New Post",
+        content: "New Post",
         author_name: "New Author",
       },
     });
@@ -73,7 +73,7 @@ describe("editPost", () => {
       .put("/posts/1")
       .send({
         title: "New Title",
-        post: "New Post",
+        content: "New Post",
         author_name: "New Author",
       });
 
@@ -85,12 +85,12 @@ describe("editPost", () => {
     const mockPost = {
       id: 1,
       title: "Old Title",
-      post: "Old Post",
+      content: "Old Post",
       author_name: "Old Author",
       save: jest.fn().mockResolvedValue({
         id: 1,
         title: " DROP TABLE posts ",
-        post: " DROP TABLE posts ",
+        content: " DROP TABLE posts ",
         author_name: " DROP TABLE posts ",
       }),
     };
@@ -101,7 +101,7 @@ describe("editPost", () => {
       .put("/posts/1")
       .send({
         title: "'; DROP TABLE posts; --",
-        post: "'; DROP TABLE posts; --",
+        content: "'; DROP TABLE posts; --",
         author_name: "'; DROP TABLE posts; --",
       });
 
@@ -110,7 +110,7 @@ describe("editPost", () => {
       updatedPost: {
         id: 1,
         title: " DROP TABLE posts ",
-        post: " DROP TABLE posts ",
+        content: " DROP TABLE posts ",
         author_name: " DROP TABLE posts ",
       },
     });

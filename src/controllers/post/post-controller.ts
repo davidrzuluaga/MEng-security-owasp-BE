@@ -95,11 +95,9 @@ class PostController {
         author_name: SecurityManager.sanitizeInput(author_name),
       } as PostType;
 
-      if (author_name) {
-        newPost = await Post.create(newPost);
-      }
+      newPost = await Post.create(newPost);
 
-      if (newPost?.id) {
+      if (newPost.id) {
         return res.status(201).json({ newPost });
       } else {
         return res.status(400).json({ newPost });

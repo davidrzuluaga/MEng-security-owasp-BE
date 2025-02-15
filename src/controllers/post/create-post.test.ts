@@ -60,6 +60,32 @@ describe("POST /posts", () => {
     expect(response.body.message).toBe("error");
   });
 
+  it("should return 400 if the post is not created with the id", async () => {
+    (SecurityManager.sanitizeInput as jest.Mock).mockImplementation(
+      (input) => input
+    );
+    (Post.create as jest.Mock).mockResolvedValue({
+      id: null,
+      title: "Test Title",
+      content: "Test Post",
+      author_name: "Test Author",
+    });
+
+    const response = await request(app).post("/posts").send({
+      title: "Test Title",
+      content: "Test Post",
+      author_name: "Test Author",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.newPost).toEqual({
+      id: null,
+      title: "Test Title",
+      content: "Test Post",
+      author_name: "Test Author",
+    });
+  });
+
   it("should sanitize inputs to avoid SQL injection", async () => {
     const maliciousInput = "'; DROP TABLE posts; --";
     const sanitizedInput = "sanitized";
