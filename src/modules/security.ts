@@ -5,15 +5,33 @@ class SecurityManager {
    * @returns A sanitized string.
    */
   static sanitizeInput(input: string): string {
-    if (typeof input !== "string") return input; // If input is not a string, return it as is.
+    if (typeof input !== "string") return input;
 
-    // Replace potentially dangerous characters with safe equivalents
-    return input
-      .replace(/<script.*?>.*?<\/script>/gi, "") // Remove <script> tags
-      .replace(/<[^>]+>/g, "") // Remove other HTML tags
-      .replace(/['";]/g, "") // Remove single quotes, double quotes, and semicolons
+    // Remove all HTML tags
+    let sanitized = input.replace(/<[^>]*>/g, "");
+
+    // Encode special HTML characters to prevent XSS
+    sanitized = sanitized
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&#x27;")
+      .replace(/\//g, "&#x2F;");
+
+    // Remove common SQL injection characters and keywords
+    sanitized = sanitized
+      .replace(/['"`;\\]/g, "") // Remove quotes, semicolons, backslashes
       .replace(/--/g, "") // Remove SQL comment indicators
-      .replace(/\\/g, ""); // Remove backslashes
+      .replace(/\b(OR|AND|SELECT|INSERT|DELETE|UPDATE|DROP|UNION|WHERE|FROM|INTO|VALUES)\b/gi, "");
+
+    // Normalize whitespace
+    sanitized = sanitized.replace(/\s+/g, " ").trim();
+
+    // Optionally, limit input length
+    sanitized = sanitized.substring(0, 255);
+
+    return sanitized;
   }
 }
 
